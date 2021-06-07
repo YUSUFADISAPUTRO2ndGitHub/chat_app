@@ -10,14 +10,23 @@ app.set('view engine', 'ejs');
 const port = process.env.PORT || 3001;
 
 var local_rooms = [];
+get_all_rooms();
 async function get_all_rooms(){
     fs.readdir(`./`, function (err, data) {
         if (err) {
             console.log('fail to save chat! ' + err);
         }else{
             console.log(data);
+            var i =0;
+            for(i; i < data.length; i++){
+                if(data[i].includes(".txt")){
+                    var selected_data = data[i].split(".");
+                    local_rooms.push(selected_data[0]);
+                }
+            }
+            console.log(local_rooms);
         }
-    }
+    });
 }
 app.get('/new-chat-room', (req, res) => {
     var roomNumber = (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100);
