@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <style>
+        body{
+            background-color: darkgrey;
+        }
+        .chat-input-area{
+            position: fixed;
+            bottom: 0;
+        }
+        .sent-chat, .sent-chat-from-opposite{
+            border: none;
+        }
+        /* .sent-chat{
+            background-color: darkgreen;
+            color: white;
+            text-align: right;
+        } */
+        .sent-chat-from-opposite{
+            background-color: darkgreen;
+            color: white;
+        }
+        .hidden-area{
+            background-color: transparent;
+            color: transparent;
+            border: none;
+        }
+    </style>
+    <body>
+        <ul class="list-group sent-chat-area">
+        </ul>
+        <ul class="list-group hidden-area">
+            <li class="list-group-item hidden-area">Hidden</li>
+            <li class="list-group-item hidden-area">Hidden</li>
+        </ul>
+        <div class="input-group chat-input-area card-body">
+            <span class="input-group-text">Your chat:</span>
+            <input type="text" class="form-control name">
+            <input type="text" class="form-control message">
+            <span class="input-group-text" onclick="send_message()">send</span>
+        </div>
+    </body>
+    <script>
+        $( document ).ready(function() {
+            get_all_chats();
+        });
+        setInterval(() => {
+            get_all_chats();
+        }, 1000);
+        function get_all_chats(){
+            get_all_chats_in_this_room().done(function (response) {
+                $(".sent-chat-area").empty();
+                var i = 0;
+                for(i; i < response.length; i ++){
+                    $(".sent-chat-area").append(
+                        `
+                            <li class="list-group-item sent-chat-from-opposite">
+                                ${response[i].name} : ${response[i].message}
+                            </li>
+                        `
+                    );
+                }
+            });
+        }
+        function get_all_chats_in_this_room(){
+            var settings = {
+                "url": `http://localhost:3001/get-messages?room_number=3204`,
+                "method": "GET",
+                "timeout": 0,
+            };
+            
+            return $.ajax(settings);
+        }
+        function send_message(){
+            send_chat_to_this_room($(".message").val(), $(".name").val()).done(function (response) {
+                get_all_chats();
+            });
+        }
+        function send_chat_to_this_room(message, name){
+            var settings = {
+                "url": `http://localhost:3001/add-message?room_number=3204&message=${message}&name=${name}`,
+                "method": "GET",
+                "timeout": 0,
+            };
+            
+            return $.ajax(settings);
+        }
+    </script>
+</html>

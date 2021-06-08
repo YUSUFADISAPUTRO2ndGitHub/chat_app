@@ -28,6 +28,9 @@ async function get_all_rooms(){
         }
     });
 }
+app.get('/chat-room', (req, res) => {
+    res.render('chat.ejs');
+})
 app.get('/new-chat-room', (req, res) => {
     var roomNumber = (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100);
     if(req.query.message != undefined && req.query.name != undefined) {
