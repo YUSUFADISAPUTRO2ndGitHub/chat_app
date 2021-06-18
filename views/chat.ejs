@@ -38,8 +38,8 @@
         </ul>
         <div class="input-group chat-input-area card-body">
             <span class="input-group-text">Your chat:</span>
-            <input type="text" class="form-control name">
-            <input type="text" class="form-control message">
+            <input type="text" class="form-control name" placeholder="Nama">
+            <input type="text" class="form-control message" placeholder="Pesan">
             <span class="input-group-text" onclick="send_message()">send</span>
         </div>
     </body>
@@ -47,6 +47,12 @@
         $( document ).ready(function() {
             get_all_chats();
         });
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const room_number = urlParams.get('room_number');
+        const user_name = urlParams.get('user_name');
+        $(".name").val(user_name);
+        $(".name").prop( "disabled", true );
         setInterval(() => {
             get_all_chats();
         }, 1000);
@@ -67,7 +73,7 @@
         }
         function get_all_chats_in_this_room(){
             var settings = {
-                "url": `http://localhost:3001/get-messages?room_number=3204`,
+                "url": `http://localhost:3001/get-messages?room_number=${room_number}`,
                 "method": "GET",
                 "timeout": 0,
             };
@@ -81,7 +87,7 @@
         }
         function send_chat_to_this_room(message, name){
             var settings = {
-                "url": `http://localhost:3001/add-message?room_number=3204&message=${message}&name=${name}`,
+                "url": `http://localhost:3001/add-message?room_number=${room_number}&message=${message}&name=${name}`,
                 "method": "GET",
                 "timeout": 0,
             };
