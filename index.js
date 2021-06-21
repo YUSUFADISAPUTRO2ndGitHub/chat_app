@@ -7,7 +7,7 @@ var fs = require('fs');
 const app = express();
 app.use(cors(), express.static( "public" ) );
 app.set('view engine', 'ejs');
-const port = process.env.PORT || 3001;
+const port = 3045;
 
 var local_rooms = [];
 setInterval(() => {
@@ -36,7 +36,15 @@ async function check_chat(selected_data){
             console.log(err);
         }else{
             if(data.toString().toUpperCase().includes("SAMPAI JUMPAH")){
-                
+                if(!selected_data[0].includes('closed')){
+                    fs.rename(selected_data[0] + '.txt', selected_data[0] + '-closed.txt', (err) => {
+                        if (err){
+                            console.log(err);
+                        }else{
+                            console.log(selected_data[0] + '.txt Rename complete!');
+                        }
+                    });
+                }
             }else{
                 await local_rooms.push(selected_data[0]);
                 console.log(local_rooms);
@@ -56,6 +64,14 @@ app.get('/cs_enters_chat_room', (req, res) => {
 app.get('/available_chat_rooms', (req, res) => {
     res.render('available_chat_rooms.ejs');
 })
+app.get('/thank-you', (req, res) => {
+    res.render('thank_you.ejs');
+})
+const path = require('path');
+const router = express.Router();
+app.get('/ringtone', (req, res) => {
+    res.sendFile(path.join(__dirname+'/ringtone.mp3'));
+});
 app.get('/new-chat-room', (req, res) => {
     var roomNumber = (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100) + (Math.floor(Math.random() * 999) + 100);
     if(req.query.message != undefined && req.query.name != undefined) {
@@ -133,5 +149,5 @@ app.get('/get-all-rooms', (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://0.0.0.0:${port}`);
+  console.log(`Example app listening at ${port}`);
 })

@@ -20,13 +20,29 @@
             text-align: right;
         } */
         .sent-chat-from-opposite{
-            background-color: darkgreen;
+            background-color: darkslategray;
             color: white;
         }
         .hidden-area{
             background-color: transparent;
             color: transparent;
             border: none;
+        }
+        .name{
+            max-width: 200px !important ;
+        }
+        .button, .dropdown-menu, .dropdown-item{
+            background-color: darkred !important;
+            color: white !important;
+        }
+        .dropdown-item:hover{
+            background-color: red !important;
+            color: black !important;
+        }
+        @media only screen and (max-width: 1000px) {
+            body, input, button, li, span {
+                font-size: 38px !important;
+            }
         }
     </style>
     <body>
@@ -37,8 +53,14 @@
             <li class="list-group-item hidden-area">Hidden</li>
         </ul>
         <div class="input-group chat-input-area card-body">
-            <span class="input-group-text">Your chat:</span>
+            <span class="input-group-text">Chat:</span>
             <input type="text" class="form-control name" placeholder="Nama">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><span class="dropdown-item" onclick="end_this_conversation()">Akhiri konversasi ini</span></li>
+            </ul>
             <input type="text" class="form-control message" placeholder="Pesan">
             <span class="input-group-text" onclick="send_message()">send</span>
         </div>
@@ -51,11 +73,15 @@
         const urlParams = new URLSearchParams(queryString);
         const room_number = urlParams.get('room_number');
         const user_name = urlParams.get('user_name');
+        var old_length = 0;
         $(".name").val(user_name);
         $(".name").prop( "disabled", true );
         setInterval(() => {
             get_all_chats();
         }, 1000);
+        function end_this_conversation(){
+            $(".message").val("sampai jumpah");
+        }
         function get_all_chats(){
             get_all_chats_in_this_room().done(function (response) {
                 $(".sent-chat-area").empty();
@@ -68,12 +94,22 @@
                             </li>
                         `
                     );
+                    if(response[i].message.toUpperCase().includes("SAMPAI JUMPAH")){
+                        alert("This conversation has been ended by " + response[i].name);
+                        window.location.href = "./thank-you";
+                    }
+                }
+                if(old_length < response.length){
+                    alert(old_length);
+                    old_length = response.length;
+                    var mySound = new Audio("http://cs.sold.co.id/ringtone");
+                    mySound.play();
                 }
             });
         }
         function get_all_chats_in_this_room(){
             var settings = {
-                "url": `http://localhost:3001/get-messages?room_number=${room_number}`,
+                "url": `http://cs.sold.co.id/get-messages?room_number=${room_number}`,
                 "method": "GET",
                 "timeout": 0,
             };
@@ -83,11 +119,12 @@
         function send_message(){
             send_chat_to_this_room($(".message").val(), $(".name").val()).done(function (response) {
                 get_all_chats();
+                $(".message").val("");
             });
         }
         function send_chat_to_this_room(message, name){
             var settings = {
-                "url": `http://localhost:3001/add-message?room_number=${room_number}&message=${message}&name=${name}`,
+                "url": `http://cs.sold.co.id/add-message?room_number=${room_number}&message=${message}&name=${name}`,
                 "method": "GET",
                 "timeout": 0,
             };
