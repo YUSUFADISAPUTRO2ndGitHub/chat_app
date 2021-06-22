@@ -55,7 +55,7 @@ async function check_chat(selected_data){
 app.get('/chat-room', (req, res) => {
     res.render('chat.ejs');
 })
-app.get('/new_chat_room', (req, res) => {
+app.get('/', (req, res) => {
     res.render('request_new_chat_room.ejs');
 })
 app.get('/cs_enters_chat_room', (req, res) => {
