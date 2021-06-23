@@ -62,6 +62,13 @@
         </div>
     </body>
     <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const user_name = urlParams.get('user_name');
+        if(user_name != undefined){
+            $(".name").val(user_name);
+            $(".name").prop( "disabled", true );
+        }
         $(".button-to-create-new-chat-room").click(async function(){
             if(
                 $(".name").val().length > 0
