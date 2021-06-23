@@ -100,16 +100,16 @@
                     }
                 }
                 if(old_length < response.length){
-                    alert(old_length);
+                    // alert(old_length);
                     old_length = response.length;
-                    var mySound = new Audio("http://cs.sold.co.id/ringtone");
+                    var mySound = new Audio("http://147.139.168.202:3045/ringtone");
                     mySound.play();
                 }
             });
         }
         function get_all_chats_in_this_room(){
             var settings = {
-                "url": `http://cs.sold.co.id/get-messages?room_number=${room_number}`,
+                "url": `http://147.139.168.202:3045/get-messages?room_number=${room_number}`,
                 "method": "GET",
                 "timeout": 0,
             };
@@ -124,7 +124,7 @@
         }
         function send_chat_to_this_room(message, name){
             var settings = {
-                "url": `http://cs.sold.co.id/add-message?room_number=${room_number}&message=${message}&name=${name}`,
+                "url": `http://147.139.168.202:3045/add-message?room_number=${room_number}&message=${message}&name=${name}`,
                 "method": "GET",
                 "timeout": 0,
             };
